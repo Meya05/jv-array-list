@@ -22,11 +22,9 @@ public class ArrayList<T> implements List<T> {
     public void add(T value, int index) {
         checkIndexForAdd(index);
         ensureCapacity();
-
-        for (int i = size; i > index; i--) {
-            elements[i] = elements[i - 1];
+        if (index < size) {
+            System.arraycopy(elements, index, elements, index + 1, size - index);
         }
-
         elements[index] = value;
         size++;
     }
@@ -56,11 +54,9 @@ public class ArrayList<T> implements List<T> {
     public T remove(int index) {
         checkIndex(index);
         T removed = (T) elements[index];
-
-        for (int i = index; i < size - 1; i++) {
-            elements[i] = elements[i + 1];
+        if (index < size - 1) {
+            System.arraycopy(elements, index + 1, elements, index, size - index - 1);
         }
-
         elements[--size] = null;
         return removed;
     }
@@ -73,7 +69,7 @@ public class ArrayList<T> implements List<T> {
                 return remove(i);
             }
         }
-        throw new NoSuchElementException("Element not found: " + element);
+        throw new NoSuchElementException();
     }
 
     @Override
@@ -85,8 +81,6 @@ public class ArrayList<T> implements List<T> {
     public boolean isEmpty() {
         return size == 0;
     }
-
-    // ---------- Helper methods ----------
 
     private void ensureCapacity() {
         if (size == elements.length) {
